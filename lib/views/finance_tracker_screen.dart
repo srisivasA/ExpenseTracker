@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'package:provider/provider.dart';
 
 import '../viewmodels/finance_viewmodel.dart';
 
+=======
+import 'package:groceries/viewmodels/finance_viewmodel.dart';
+import 'package:provider/provider.dart';
+
+>>>>>>> Stashed changes
 
 class FinanceTrackerScreen extends StatelessWidget {
   final TextEditingController _amountController = TextEditingController();
@@ -39,6 +45,7 @@ class FinanceTrackerScreen extends StatelessWidget {
                     children: [
                       toggleButton("Income",
                           viewModel.transactionType == "Income", () {
+<<<<<<< Updated upstream
                             viewModel.changeTransactionType("Income");
                           }),
                       SizedBox(width: 10),
@@ -46,6 +53,15 @@ class FinanceTrackerScreen extends StatelessWidget {
                           viewModel.transactionType == "Expense", () {
                             viewModel.changeTransactionType("Expense");
                           }),
+=======
+                        viewModel.changeTransactionType("Income");
+                      }),
+                      SizedBox(width: 10),
+                      toggleButton("Expense",
+                          viewModel.transactionType == "Expense", () {
+                        viewModel.changeTransactionType("Expense");
+                      }),
+>>>>>>> Stashed changes
                     ],
                   ),
                   SizedBox(height: 20),
@@ -55,9 +71,15 @@ class FinanceTrackerScreen extends StatelessWidget {
                     value: viewModel.selectedCategory,
                     items: viewModel.categories
                         .map((category) => DropdownMenuItem(
+<<<<<<< Updated upstream
                       value: category,
                       child: Text(category),
                     ))
+=======
+                              value: category,
+                              child: Text(category),
+                            ))
+>>>>>>> Stashed changes
                         .toList(),
                     onChanged: (value) {
                       viewModel.changeSelectedCategory(value!);
@@ -84,7 +106,11 @@ class FinanceTrackerScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       final double? amount =
+<<<<<<< Updated upstream
                       double.tryParse(_amountController.text);
+=======
+                          double.tryParse(_amountController.text);
+>>>>>>> Stashed changes
                       if (amount != null) {
                         viewModel.addTransaction(amount);
                         _amountController.clear();
@@ -131,9 +157,13 @@ class FinanceTrackerScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+<<<<<<< Updated upstream
                   color: title == "Total Expenses"
                       ? Colors.red
                       : Colors.green,
+=======
+                  color: title == "Total Expenses" ? Colors.red : Colors.green,
+>>>>>>> Stashed changes
                 ),
               ),
             ],
@@ -152,8 +182,13 @@ class FinanceTrackerScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? (title == "Income"
+<<<<<<< Updated upstream
                 ? Colors.green.shade100
                 : Colors.red.shade100)
+=======
+                    ? Colors.green.shade100
+                    : Colors.red.shade100)
+>>>>>>> Stashed changes
                 : Colors.grey.shade200,
             border: Border.all(
               color: isSelected

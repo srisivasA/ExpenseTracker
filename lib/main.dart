@@ -9,7 +9,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => FinanceTrackerViewModel()),
+        ChangeNotifierProvider(create: (_) =>  FinanceTrackerViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

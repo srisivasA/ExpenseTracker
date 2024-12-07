@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 
+=======
+import 'package:shared_preferences/shared_preferences.dart';
+>>>>>>> Stashed changes
 
 class FinanceTrackerViewModel extends ChangeNotifier {
   double _totalIncome = 0.0;
@@ -31,6 +35,13 @@ class FinanceTrackerViewModel extends ChangeNotifier {
   List<String> get categories =>
       _transactionType == "Income" ? _incomeCategories : _expenseCategories;
 
+<<<<<<< Updated upstream
+=======
+  FinanceTrackerViewModel() {
+    _loadDataFromStorage();
+  }
+
+>>>>>>> Stashed changes
   void changeTransactionType(String type) {
     _transactionType = type;
     _selectedCategory = _transactionType == "Income"
@@ -44,14 +55,38 @@ class FinanceTrackerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+<<<<<<< Updated upstream
   void addTransaction(double amount) {
+=======
+  Future<void> addTransaction(double amount) async {
+>>>>>>> Stashed changes
     if (amount > 0) {
       if (_transactionType == "Income") {
         _totalIncome += amount;
       } else {
         _totalExpenses += amount;
       }
+<<<<<<< Updated upstream
       notifyListeners();
     }
   }
+=======
+      await _saveDataToStorage();
+      notifyListeners();
+    }
+  }
+
+  Future<void> _loadDataFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    _totalIncome = prefs.getDouble('totalIncome') ?? 0.0;
+    _totalExpenses = prefs.getDouble('totalExpenses') ?? 0.0;
+    notifyListeners();
+  }
+
+  Future<void> _saveDataToStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('totalIncome', _totalIncome);
+    await prefs.setDouble('totalExpenses', _totalExpenses);
+  }
+>>>>>>> Stashed changes
 }
