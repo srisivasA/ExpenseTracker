@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
-=======
-import 'package:shared_preferences/shared_preferences.dart';
->>>>>>> Stashed changes
+import '../services/db_helper.dart';
 
 class FinanceTrackerViewModel extends ChangeNotifier {
   double _totalIncome = 0.0;
   double _totalExpenses = 0.0;
   String _transactionType = "Income";
   String _selectedCategory = "Salary";
+
+  List<Map<String, dynamic>> _transactions = [];
 
   final List<String> _incomeCategories = [
     "Salary",
@@ -30,18 +31,24 @@ class FinanceTrackerViewModel extends ChangeNotifier {
   double get totalIncome => _totalIncome;
   double get totalExpenses => _totalExpenses;
   double get totalBalance => _totalIncome - _totalExpenses;
+  List<Map<String, dynamic>> get transactions => _transactions;
+
+  String get totalIncomeFormatted =>
+      NumberFormat.currency(locale: 'en_IN', symbol: '₹').format(_totalIncome);
+  String get totalExpensesFormatted =>
+      NumberFormat.currency(locale: 'en_IN', symbol: '₹').format(_totalExpenses);
+  String get totalBalanceFormatted =>
+      NumberFormat.currency(locale: 'en_IN', symbol: '₹').format(totalBalance);
+
   String get transactionType => _transactionType;
   String get selectedCategory => _selectedCategory;
   List<String> get categories =>
       _transactionType == "Income" ? _incomeCategories : _expenseCategories;
 
-<<<<<<< Updated upstream
-=======
   FinanceTrackerViewModel() {
-    _loadDataFromStorage();
+    _loadTransactionsFromDB();
   }
 
->>>>>>> Stashed changes
   void changeTransactionType(String type) {
     _transactionType = type;
     _selectedCategory = _transactionType == "Income"
@@ -55,38 +62,73 @@ class FinanceTrackerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< Updated upstream
-  void addTransaction(double amount) {
-=======
-  Future<void> addTransaction(double amount) async {
->>>>>>> Stashed changes
-    if (amount > 0) {
-      if (_transactionType == "Income") {
-        _totalIncome += amount;
-      } else {
-        _totalExpenses += amount;
-      }
-<<<<<<< Updated upstream
-      notifyListeners();
-    }
-  }
-=======
-      await _saveDataToStorage();
-      notifyListeners();
-    }
+
+
+
+ Future<void> addTransaction(double amount) async {
+  if (_transactionType == 'Expense' && _totalIncome - _totalExpenses < amount) {
+  
+    Fluttertoast.showToast(
+      msg: 'You do not have enough money to spend',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+    return;
   }
 
-  Future<void> _loadDataFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    _totalIncome = prefs.getDouble('totalIncome') ?? 0.0;
-    _totalExpenses = prefs.getDouble('totalExpenses') ?? 0.0;
+  final transaction = {
+    'type': _transactionType,
+    'category': _selectedCategory,
+    'amount': amount,
+  };
+
+  await DBHelper.instance.insertTransaction(transaction);
+
+
+  _transactions = [..._transactions, transaction];
+
+  if (_transactionType == 'Income') {
+    _totalIncome += amount;
+  } else {
+    _totalExpenses += amount;
+  }
+
+  // Show success toast
+  Fluttertoast.showToast(
+    msg: '$_transactionType added successfully',
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.green,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+
+  notifyListeners();
+}
+
+
+  Future<void> _loadTransactionsFromDB() async {
+    final transactions = await DBHelper.instance.fetchTransactions();
+    _transactions = transactions;
+
+    _totalIncome = transactions
+        .where((t) => t['type'] == 'Income')
+        .fold(0.0, (sum, t) => sum + t['amount']);
+    _totalExpenses = transactions
+        .where((t) => t['type'] == 'Expense')
+        .fold(0.0, (sum, t) => sum + t['amount']);
+
     notifyListeners();
   }
 
-  Future<void> _saveDataToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('totalIncome', _totalIncome);
-    await prefs.setDouble('totalExpenses', _totalExpenses);
+  Future<void> clearAllTransactions() async {
+    await DBHelper.instance.clearTransactions();
+    _transactions.clear();
+    _totalIncome = 0.0;
+    _totalExpenses = 0.0;
+    notifyListeners();
   }
->>>>>>> Stashed changes
 }

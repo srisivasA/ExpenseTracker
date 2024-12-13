@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:groceries/viewmodels/finance_viewmodel.dart';
-import 'package:groceries/views/finance_tracker_screen.dart';
 import 'package:provider/provider.dart';
 
-
+import './viewmodels/finance_viewmodel.dart';
+import './views/finance_tracker_screen.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) =>  FinanceTrackerViewModel()),
-      ],
+    ChangeNotifierProvider(
+      create: (context) => FinanceTrackerViewModel(),
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
         home: FinanceTrackerScreen(),
+        debugShowCheckedModeBanner: false,
       ),
     ),
   );
